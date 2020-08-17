@@ -1,0 +1,38 @@
+#!bin/bash
+
+# Create req directories:
+mkdir -p /home/nzbget/maindir/
+mkdir -p /home/.config/rclone/
+
+curl -s $TEGBZN_CONF_URL -o /home/nzbget/nzbget.conf && 
+echo 'nzbget config loaded' || echo 'ERROR: unable to get nzbget config'
+
+curl -s $RCONF_URL -o /home/.config/rclone/rclone.conf && 
+echo 'rclone config loaded' || echo 'ERROR: unable to get rclone config'
+
+echo 'List of remotes, the first remote shall be used for uploading stuff:'
+rclone listremotes
+
+# Rewrites certain options in nzbget.conf:
+sed -i \
+    -e 's/^ControlPort=.*$/ControlPort='${PORT}'/' \
+    -e 's/^ControlUsername=.*$/ControlUsername='${CTRL_USERNAME}'/' \
+    -e 's/^ControlPassword=.*$/ControlPassword='${CTRL_PASS}'/' \
+    -e 's/^MainDir=.*$/MainDir=\/home\/nzbget\/maindir\//' \
+    -e 's/^Extensions=.*$/Extensions=rclone_pp.py/' \
+    -e 's/^FormAuth=.*$/FormAuth=yes/' \
+    /home/nzbget/nzbget.conf
+
+./nzbget/nzbget -o ControlPort=$PORT -D
+
+# The ping file is used to decide when and when not to ping:
+echo '' > /home/ping.true
+
+# Extracts the extension of ping file, extension will always be a boolean value:
+ping=$(ls | grep '^ping' | awk -F. '{print$2}')
+
+# doa is the ping decider script and it is called at every 29 mins (from boot):
+while $ping; do sleep 1740; python3 doa.py ping_check; done
+
+# Shuts down nzbget when $ping is false:
+python3 doa.py shutdown
