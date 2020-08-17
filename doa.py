@@ -27,9 +27,11 @@
 import os
 import re
 import sys
-import datetime
 import requests
+from sys import argv
 from xmlrpc.client import ServerProxy
+
+task = argv[1]
 
 host = '127.0.0.1'
 port = os.environ.get('PORT')
@@ -40,10 +42,6 @@ app_url = os.environ.get('APP_URL')
 # Build an URL for XML-RPC requests
 rpcUrl = f'http://{username}:{password}@{host}:{port}/xmlrpc'
 server = ServerProxy(rpcUrl)  # Create remote server object
-
-# Fetches bool Status for the following:
-ServerStandBy = server.status()['ServerStandBy']
-DownloadPaused = server.status()['DownloadPaused']
 
 # task_list = [
 #   'ping', 'return_bool', 'return_file_path', 'set_false', 'set_true']
@@ -56,7 +54,7 @@ def ping(task):
 
         for dir in os.listdir(file_root):
             if re.search(r'^ping', dir):
-                
+
                 if task == 'return_file_path':
                     return file_root + dir
                 elif task == 'return_bool':
@@ -81,12 +79,20 @@ def ping(task):
                        'is entered in correctly'
             server.writelog('ERROR', message)
 
-# Pings the server if server is not in standby or if download is paused:
-if not ServerStandBy or DownloadPaused:
-    ping('ping'); ping('set_true')
+if task == 'ping_check':
+    # Fetches bool Status for the following:
+    ServerStandBy = server.status()['ServerStandBy']
+    DownloadPaused = server.status()['DownloadPaused']
 
-# Opposite of the above condition:
-elif ServerStandBy and not DownloadPaused:
-    ping('set_false')
+    # Pings the server if server is not in standby or if download is paused:
+    if not ServerStandBy or DownloadPaused:
+        ping('ping'); ping('set_true')
+
+    # Opposite of the above condition:
+    elif ServerStandBy and not DownloadPaused:
+        ping('set_false')
+
+elif task == 'shutdown':
+    server.shutdown()
 
 sys.exit(0)
