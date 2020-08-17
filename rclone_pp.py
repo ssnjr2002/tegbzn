@@ -14,7 +14,6 @@
 
 import os
 import sys
-import datetime
 import subprocess
 from xmlrpc.client import ServerProxy
 
@@ -43,8 +42,8 @@ rpcUrl = f'http://{username}:{password}@{host}:{port}/xmlrpc'
 # Create remote server object:
 server = ServerProxy(rpcUrl)
 
-# Function for running shell cmds with live output to logs:
-def run_rclone(command):
+# Function for running rclone cmds with live output to logs:
+def rclone(command):
     with subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -52,24 +51,22 @@ def run_rclone(command):
             shell=True) as proc:
         while True:
             output = proc.stdout.readline().decode('UTF-8').strip()
+            if output != '':
+                server.writelog('INFO', output)
             if output == '' and proc.poll() is not None:
                 server.writelog(
                     'INFO', f'"{down_nzb_name}" has been uploaded to ' + \
                     f'"{remote_name}" sucessfully!')
                 break
-            if output != '':
-                server.writelog('INFO', output)
 
 nzb_upload_dir = f"{remote_name}/{upload_dir}/{down_nzb_name}"
 
 if status == 'SUCCESS':
     server.writelog(
         'INFO', f'Commencing upload of "{down_nzb_name}" to "{remote_name}"')
-    
-    run_rclone(
+    rclone(
         f'rclone move "{nzb_down_dir}" "{nzb_upload_dir}" ' + \
         '-v --stats=1s --stats-one-line')
-
     sys.exit(93)
 
 elif status == 'WARNING':
