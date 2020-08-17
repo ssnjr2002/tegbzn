@@ -1,0 +1,29 @@
+#!bin/bash
+
+mkdir -p /home/nzbget/maindir/
+mkdir -p /home/.config/rclone/
+
+curl -s $TEGBZN_CONF_URL -o /home/nzbget/nzbget.conf && 
+echo 'nzbget config loaded' || echo 'ERROR: unable to get nzbget config'
+
+curl -s $RCONF_URL -o /home/.config/rclone/rclone.conf && 
+echo 'rclone config loaded' || echo 'ERROR: unable to get rclone config'
+
+echo 'List of remotes, the first remote shall be used for uploading stuff:'
+rclone listremotes
+
+sed -i \
+    -e 's/^ControlPort=.*$/ControlPort='${PORT}'/' \
+    -e 's/^ControlUsername=.*$/ControlUsername='${CTRL_USERNAME}'/' \
+    -e 's/^ControlPassword=.*$/ControlPassword='${CTRL_PASS}'/' \
+    -e 's/^MainDir=.*$/MainDir=\/home\/nzbget\/maindir\//' \
+    -e 's/^Extensions=.*$/Extensions=rclone_pp.py/' \
+    -e 's/^FormAuth=.*$/FormAuth=yes/' \
+    /home/nzbget/nzbget.conf
+
+./nzbget/nzbget -o ControlPort=$PORT -D
+
+echo '' > /home/ping.true
+ping=$(ls | grep '^ping' | awk -F. '{print$2}')
+
+while $ping; do sleep 1740; python3 doa.py; done

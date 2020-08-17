@@ -1,0 +1,31 @@
+{
+  "name": "tegbzn",
+  "description": "This app does one little thing, and does it well.",
+  "keywords": ["cyka", "bylat"],
+  "repository": "https://github.com/ssnjrthegr8/tegbzn.git",
+  "stack": "container",
+  "env": {
+    "TEGBZN_CONF_URL": {
+      "description": "Raw github gist URL for TEGBZN config file."
+    },
+    "RCONF_URL": {
+      "description": "Raw github gist URL for rclone config file."
+    },
+    "APP_URL": {
+      "description": "Your heroku app url, for eg if your app name is 'tegbzn' then the url will be 'https://tegbzn.herokuapp.com'.",
+      "value": "https://____SUBSTITUTE_WITH_YOUR_APP_NAME____.herokuapp.com"
+    },
+    "CTRL_USERNAME": {
+      "description": "TEGBZN username. You use this to log in to the TEGBZN web instance. Leave this as it is for default values.",
+      "value": "nzbget"
+    },
+    "CTRL_PASS": {
+      "description": "TEGBZN password. You use this to log in to the TEGBZN web instance. Leave this as it is for default values.",
+      "value": "tegbzn6789"
+    },
+    "UPLOAD_DIR": {
+      "description": "Directory to upload to in your drive. No need to write rclone remote name and do not put a slash '/' at the start or the end. For eg: 'nzbget/downloads'",
+      "value": "nzbget/downloads"
+    }
+  }
+}
