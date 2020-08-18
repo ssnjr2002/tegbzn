@@ -35,4 +35,5 @@ ping=$(ls | grep '^ping' | awk -F. '{print$2}')
 while $ping; do sleep 1799; python3 doa.py ping_check; done
 
 # Shuts down nzbget when $ping is false:
+echo 'ping is: '{$ping}', shutting down nzbget'
 python3 doa.py shutdown
