@@ -4,7 +4,7 @@ FROM phusion/baseimage:bionic-1.0.0
 CMD ["/sbin/my_init"]
 
 # Install dependencies:
-RUN apt-get update 
+RUN apt-get update \
  && apt-get install -y \
     bash curl sudo wget \
     python3 unzip sed \
