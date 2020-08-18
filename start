@@ -32,7 +32,7 @@ echo '' > /home/ping.true
 ping=$(ls | grep '^ping' | awk -F. '{print$2}')
 
 # doa is the ping decider script and it is called at every 30 mins (from boot):
-while $ping; do sleep 1799; python3 doa.py ping_check; ping=$(ls | grep '^ping' | awk -F. '{print$2}'); done
+while $ping; do sleep 179; python3 doa.py ping_check; ping=$(ls | grep '^ping' | awk -F. '{print$2}'); done
 
 # Shuts down nzbget when $ping is false:
 echo 'ping is: '{$ping}', shutting down nzbget'
