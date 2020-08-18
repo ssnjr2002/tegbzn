@@ -12,7 +12,7 @@
 # or all jobs completed).
 #
 # A web dyno sleeps if it doesn't receive any traffic within 30 mins so the 
-# script pings every 29 minutes when the server is not in standby to prevent 
+# script pings every 30 minutes when the server is not in standby to prevent 
 # nzbget from dying during an ongoing process.
 #
 # To save dyno hours the script doesn't ping when server is in standby i.e. 

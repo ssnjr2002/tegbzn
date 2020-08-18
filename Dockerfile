@@ -4,14 +4,16 @@ FROM phusion/baseimage:bionic-1.0.0
 CMD ["/sbin/my_init"]
 
 # Install dependencies:
-RUN apt-get update && apt-get install -y \
-    bash curl sudo wget python3 git unzip \
-    python3-pip unzip busybox sed
-
-RUN pip3 install requests
+RUN apt-get update 
+ && apt-get install -y \
+    bash curl sudo wget \
+    python3 unzip sed \
+    python3-pip unzip \
+ && pip3 install requests
 
 # Clean up APT:
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set work dir:
 WORKDIR /home
