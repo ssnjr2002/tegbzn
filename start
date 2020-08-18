@@ -1,9 +1,5 @@
 #!bin/bash
 
-# Create req directories:
-mkdir -p /home/nzbget/maindir/
-mkdir -p /home/.config/rclone/
-
 curl  -s $TEGBZN_CONF_URL -o /home/nzbget/nzbget.conf && 
 echo 'nzbget config loaded' || { echo 'ERROR: unable to get nzbget config' ; exit 1; }
 
@@ -22,18 +18,4 @@ sed -i \
 
 ./nzbget/nzbget -o ControlPort=$PORT -D
 
-echo 'List of remotes, the first remote shall be used for uploading stuff:'
-rclone listremotes
-
-# The ping file is used to decide when and when not to ping:
-echo '' > /home/ping.true
-
-# Extracts the extension of ping file, extension will always be a boolean value:
-ping=$(ls | grep '^ping' | awk -F. '{print$2}')
-
-# doa is the ping decider script and it is called at every 30 mins (from boot):
-while $ping; do sleep 179; python3 doa.py ping_check; ping=$(ls | grep '^ping' | awk -F. '{print$2}'); done
-
-# Shuts down nzbget when $ping is false:
-echo 'ping is: '{$ping}', shutting down nzbget'
-python3 doa.py shutdown
+python3 ping.py

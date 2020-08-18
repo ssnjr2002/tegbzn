@@ -23,10 +23,14 @@ RUN wget https://nzbget.net/download/nzbget-latest-bin-linux.run \
  && bash nzbget-latest-bin-linux.run \
  && curl https://rclone.org/install.sh | sudo bash
 
+# Create required dirs:
+RUN mkdir -p /home/nzbget/maindir/ \
+ && mkdir -p /home/.config/rclone/
+
 # Copy files:
 COPY start /home/
 COPY rclone_pp.py /home/nzbget/scripts/
-COPY doa.py /home/
+COPY ping.py /home/
 
 # Run NZBGET:
 CMD bash /home/start
