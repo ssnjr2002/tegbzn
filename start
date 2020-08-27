@@ -8,12 +8,12 @@ echo 'rclone config loaded' || { echo 'ERROR: unable to get rclone config' ; exi
 
 # Rewrites certain options in nzbget.conf:
 sed -i \
-    -e 's/^ControlPort=.*$/ControlPort='${PORT}'/' \
-    -e 's/^ControlUsername=.*$/ControlUsername='${CTRL_USERNAME}'/' \
-    -e 's/^ControlPassword=.*$/ControlPassword='${CTRL_PASS}'/' \
-    -e 's/^MainDir=.*$/MainDir=\/home\/nzbget\/maindir\//' \
-    -e 's/^Extensions=.*$/Extensions=rclone_pp.py/' \
-    -e 's/^FormAuth=.*$/FormAuth=yes/' \
+    -e 's/\(ControlPort=\).*/\1'${PORT}'/' \
+    -e 's/\(ControlUsername=\).*/\1'${CTRL_USERNAME}'/' \
+    -e 's/\(ControlPassword=\).*/\1'${CTRL_PASS}'/' \
+    -e 's/\(MainDir=\).*/\1\/home\/nzbget\/maindir\//' \
+    -e 's/\(Extensions=\).*/\1rclone_pp.py/' \
+    -e 's/\(FormAuth=\).*/\1yes/' \
     /home/nzbget/nzbget.conf
 
 ./nzbget/nzbget -o ControlPort=$PORT -D
