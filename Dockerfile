@@ -9,6 +9,7 @@ RUN apt-get update \
     bash curl sudo wget \
     python3 unzip sed \
     python3-pip unzip \
+    systemd golang \
  && pip3 install requests
 
 # Clean up APT:
@@ -18,10 +19,10 @@ RUN apt-get clean \
 # Set work dir:
 WORKDIR /home
 
-# Install NZBGET and rclone:
+# Install NZBGET and gclone:
 RUN wget https://nzbget.net/download/nzbget-latest-bin-linux.run \
  && bash nzbget-latest-bin-linux.run \
- && curl https://rclone.org/install.sh | sudo bash
+ && curl -s https://raw.githubusercontent.com/oneindex/script/master/gclone.sh | sudo bash
 
 # Create required dirs:
 RUN mkdir -p /home/nzbget/maindir/ \
@@ -29,7 +30,7 @@ RUN mkdir -p /home/nzbget/maindir/ \
 
 # Copy files:
 COPY start /home/
-COPY rclone_pp.py /home/nzbget/scripts/
+COPY gclone_pp.py /home/nzbget/scripts/
 COPY ping.py /home/
 
 # Run NZBGET:
