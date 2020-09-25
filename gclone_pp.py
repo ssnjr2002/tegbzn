@@ -32,7 +32,7 @@ nzb_down_dir = os.environ.get('NZBPP_DIRECTORY')
 status = os.environ.get('NZBPP_TOTALSTATUS')
 # Uses rclone listremote to list availabe remotes and chooses the first one:
 remote_name = str(
-    subprocess.check_output('rclone listremotes', shell=True).decode('UTF-8')
+    subprocess.check_output('gclone listremotes', shell=True).decode('UTF-8')
     ).splitlines()[0]
 
 if host == '0.0.0.0': host = '127.0.0.1'
@@ -43,7 +43,7 @@ rpcUrl = f'http://{username}:{password}@{host}:{port}/xmlrpc'
 server = ServerProxy(rpcUrl)
 
 # Function for running rclone cmds with live output to logs:
-def rclone(command):
+def gclone(command):
     with subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -64,8 +64,8 @@ nzb_upload_dir = f"{remote_name}/{upload_dir}/{down_nzb_name}"
 if status == 'SUCCESS':
     server.writelog(
         'INFO', f'Commencing upload of "{down_nzb_name}" to "{remote_name}"')
-    rclone(
-        f'rclone move "{nzb_down_dir}" "{nzb_upload_dir}" ' + \
+    gclone(
+        f'gclone move "{nzb_down_dir}" "{nzb_upload_dir}" ' + \
         '-v --stats=1s --stats-one-line')
     sys.exit(93)
 
